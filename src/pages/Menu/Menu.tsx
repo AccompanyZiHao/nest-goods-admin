@@ -48,16 +48,16 @@ export function Menu() {
     const location = useLocation();
 
     function getSelectedKeys() {
-        if(location.pathname === '/user_manage') {
-            return ['3']
-        } else if(location.pathname === '/booking_manage') {
-            return ['2']
-        } else if(location.pathname === '/meeting_room_manage') {
-            return ['1']
-        } else if(location.pathname === '/statistics') {
-            return ['4']
+        if (location.pathname === '/user-manage') {
+          return ['3'];
+        } else if (location.pathname === '/on-sale-manage') {
+          return ['2'];
+        } else if (location.pathname === '/goods-manage') {
+          return ['1'];
+        } else if (location.pathname === '/statistics') {
+          return ['4'];
         } else {
-            return ['1']
+          return ['1'];
         }
     }
 

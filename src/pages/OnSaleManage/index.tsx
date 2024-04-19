@@ -1,40 +1,52 @@
-import { Button, DatePicker, Form, Input, Popconfirm, Table, TimePicker, message } from "antd";
-import { useEffect, useState } from "react";
-import { ColumnsType } from "antd/es/table";
-import { useForm } from "antd/es/form/Form";
-import { apply, bookingList, reject, unbind } from "../../interfaces/interfaces";
+import {
+  Button,
+  DatePicker,
+  Form,
+  Input,
+  Popconfirm,
+  Table,
+  TimePicker,
+  message,
+} from 'antd';
+import { useEffect, useState } from 'react';
+import { ColumnsType } from 'antd/es/table';
+import { useForm } from 'antd/es/form/Form';
+import {
+  apply,
+  inventoryList,
+  reject,
+  unbind,
+} from '../../interfaces/interfaces';
 import './index.css';
-import { UserSearchResult } from "../UserManage/UserManage";
-import { GoodsManageResult } from "../GoodsManage";
-import dayjs from "dayjs";
+import { UserSearchResult } from '../UserManage/UserManage';
+import { GoodsManageResult } from '../GoodsManage';
+import dayjs from 'dayjs';
 
-export interface OnSaleSearchType {
-    username: string;
-    meetingRoomName: string;
-    meetingRoomPosition: string;
-    rangeStartDate: Date;
-    rangeStartTime: Date;
-    rangeEndDate: Date;
-    rangeEndTime: Date;
+export interface OnSaleSearchForm {
+  username: string;
+  goodsName: string;
+  goodsType: string;
+  rangeStartDate: Date;
+  rangeEndDate: Date;
 }
 
-interface BookingSearchResult {
-    id: number;
-    startTime: string;
-    endTime: string;
-    status: string;
-    note: string;
-    createTime: string;
-    updateTime: string;
-    user: UserSearchResult,
-    room: GoodsManageResult
+interface OnSaleSearchResult {
+  id: number;
+  startTime: string;
+  endTime: string;
+  status: string;
+  note: string;
+  createTime: string;
+  updateTime: string;
+  user: UserSearchResult;
+  goods: GoodsManageResult;
 }
 
 export function OnSaleManage() {
   const [pageNo, setPageNo] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
-  const [bookingSearchResult, setBookingSearchResult] = useState<
-    Array<BookingSearchResult>
+  const [onSaleSearchResult, setOnSaleSearchResult] = useState<
+    Array<OnSaleSearchResult>
   >([]);
   const [num, setNum] = useState(0);
 
@@ -57,47 +69,33 @@ export function OnSaleManage() {
     }
   }
 
-  const columns: ColumnsType<BookingSearchResult> = [
+  const columns: ColumnsType<OnSaleSearchResult> = [
     {
-      title: '会议室名称',
-      dataIndex: 'room',
+      title: '商品名称',
+      dataIndex: 'goodsName',
       render(_, record) {
-        return record.room.name;
+        return record.goods.name;
       },
     },
     {
-      title: '预定人',
+      title: '操作人员',
       dataIndex: 'user',
       render(_, record) {
         return record.user.username;
       },
     },
     {
-      title: '开始时间',
-      dataIndex: 'startTime',
-      render(_, record) {
-        return dayjs(new Date(record.startTime)).format('YYYY-MM-DD HH:mm:ss');
-      },
-    },
-    {
-      title: '结束时间',
-      dataIndex: 'endTime',
-      render(_, record) {
-        return dayjs(new Date(record.endTime)).format('YYYY-MM-DD HH:mm:ss');
-      },
-    },
-    {
-      title: '审批状态',
+      title: '审核状态',
       dataIndex: 'status',
       onFilter: (value, record) => record.status.startsWith(value as string),
       filters: [
         {
-          text: '审批通过',
-          value: '审批通过',
+          text: '审核通过',
+          value: '审核通过',
         },
         {
-          text: '审批驳回',
-          value: '审批驳回',
+          text: '审核驳回',
+          value: '审核驳回',
         },
         {
           text: '申请中',
@@ -110,7 +108,7 @@ export function OnSaleManage() {
       ],
     },
     {
-      title: '预定时间',
+      title: '操作时间',
       dataIndex: 'createTime',
       render(_, record) {
         return dayjs(new Date(record.createTime)).format('YYYY-MM-DD hh:mm:ss');
@@ -163,13 +161,13 @@ export function OnSaleManage() {
     },
   ];
 
-  const searchBooking = async (values: OnSaleSearchType) => {
-    const res = await bookingList(values, pageNo, pageSize);
+  const searchOnSale = async (values: OnSaleSearchForm) => {
+    const res = await inventoryList(values, pageNo, pageSize);
 
     const { data } = res.data;
     if (res.status === 201 || res.status === 200) {
-      setBookingSearchResult(
-        data.bookings.map((item: BookingSearchResult) => {
+      setOnSaleSearchResult(
+        data.list.map((item: OnSaleSearchResult) => {
           return {
             key: item.id,
             ...item,
@@ -184,14 +182,12 @@ export function OnSaleManage() {
   const [form] = useForm();
 
   useEffect(() => {
-    searchBooking({
+    searchOnSale({
       username: form.getFieldValue('username'),
-      meetingRoomName: form.getFieldValue('meetingRoomName'),
-      meetingRoomPosition: form.getFieldValue('meetingRoomPosition'),
+      goodsName: form.getFieldValue('goodsName'),
+      goodsType: form.getFieldValue('goodsType'),
       rangeStartDate: form.getFieldValue('rangeStartDate'),
-      rangeStartTime: form.getFieldValue('rangeStartTime'),
       rangeEndDate: form.getFieldValue('rangeEndDate'),
-      rangeEndTime: form.getFieldValue('rangeEndTime'),
     });
   }, [pageNo, pageSize, num]);
 
@@ -201,54 +197,38 @@ export function OnSaleManage() {
   };
 
   return (
-    <div id="bookingManage-container">
-      <div className="bookingManage-form">
+    <div id="saleManage-container">
+      <div className="saleManage-form">
         <Form
           form={form}
-          onFinish={searchBooking}
+          onFinish={searchOnSale}
           name="search"
           layout="inline"
           colon={false}
         >
-          <Form.Item label="预定人" name="username">
+          <Form.Item label="操作人" name="username">
             <Input />
           </Form.Item>
 
-          <Form.Item label="会议室名称" name="meetingRoomName">
+          <Form.Item label="商品名称" name="goodsName">
             <Input />
           </Form.Item>
 
-          <Form.Item label="预定开始日期" name="rangeStartDate">
-            <DatePicker />
-          </Form.Item>
-
-          <Form.Item label="预定开始时间" name="rangeStartTime">
-            <TimePicker />
-          </Form.Item>
-
-          <Form.Item label="预定结束日期" name="rangeEndDate">
-            <DatePicker />
-          </Form.Item>
-
-          <Form.Item label="预定结束时间" name="rangeEndTime">
-            <TimePicker />
-          </Form.Item>
-
-          <Form.Item label="位置" name="meetingRoomPosition">
+          <Form.Item label="商品类型" name="goodsType">
             <Input />
           </Form.Item>
 
           <Form.Item label=" ">
             <Button type="primary" htmlType="submit">
-              搜索预定申请
+              搜索
             </Button>
           </Form.Item>
         </Form>
       </div>
-      <div className="bookingManage-table">
+      <div className="saleManage-table">
         <Table
           columns={columns}
-          dataSource={bookingSearchResult}
+          dataSource={onSaleSearchResult}
           pagination={{
             current: pageNo,
             pageSize: pageSize,

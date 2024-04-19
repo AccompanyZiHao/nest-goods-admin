@@ -4,7 +4,7 @@ import { UserInfo } from '../pages/InfoModify/InfoModify';
 import { UpdatePassword } from '../pages/PasswordModify/PasswordModify';
 import { CreateGoodsForm } from '../pages/GoodsManage/CreateModal';
 import { UpdateGoodsForm } from '../pages/GoodsManage/UpdateModal';
-import type { OnSaleSearchType } from '../pages/OnSaleManage';
+import type { OnSaleSearchForm } from '../pages/OnSaleManage';
 import dayjs from 'dayjs';
 import { BASE_URL } from '../const/base';
 
@@ -143,12 +143,12 @@ export async function searchGoodsList(
   });
 }
 
-export async function deleteMeetingRoom(id: number) {
-  return await axiosInstance.delete('/meeting-room/' + id);
+export async function deleteGoods(id: number) {
+  return await axiosInstance.delete('/goods/' + id);
 }
 
-export async function createGoods(meetingRoom: CreateGoodsForm) {
-  return await axiosInstance.post('/goods/create', meetingRoom);
+export async function createGoods(goods: CreateGoodsForm) {
+  return await axiosInstance.post('/goods/create', goods);
 }
 
 export async function updateGoods(goods: UpdateGoodsForm) {
@@ -159,43 +159,29 @@ export async function findGoods(id: number) {
   return await axiosInstance.get('/goods/' + id);
 }
 
-export async function bookingList(
-  searchBooking: OnSaleSearchType,
+export async function inventoryList(
+  SearchForm: OnSaleSearchForm,
   pageNo: number,
   pageSize: number
 ) {
-  let bookingTimeRangeStart;
-  let bookingTimeRangeEnd;
+  let rangeStartDate;
+  let rangeEndDate;
 
-  if (searchBooking.rangeStartDate && searchBooking.rangeStartTime) {
-    const rangeStartDateStr = dayjs(searchBooking.rangeStartDate).format(
-      'YYYY-MM-DD'
-    );
-    const rangeStartTimeStr = dayjs(searchBooking.rangeStartTime).format(
-      'HH:mm'
-    );
-    bookingTimeRangeStart = dayjs(
-      rangeStartDateStr + ' ' + rangeStartTimeStr
-    ).valueOf();
+  if (SearchForm.rangeStartDate) {
+    rangeStartDate = dayjs(SearchForm.rangeStartDate).format('YYYY-MM-DD');
   }
 
-  if (searchBooking.rangeEndDate && searchBooking.rangeEndTime) {
-    const rangeEndDateStr = dayjs(searchBooking.rangeEndDate).format(
-      'YYYY-MM-DD'
-    );
-    const rangeEndTimeStr = dayjs(searchBooking.rangeEndTime).format('HH:mm');
-    bookingTimeRangeEnd = dayjs(
-      rangeEndDateStr + ' ' + rangeEndTimeStr
-    ).valueOf();
+  if (SearchForm.rangeEndDate) {
+    rangeEndDate = dayjs(SearchForm.rangeEndDate).format('YYYY-MM-DD');
   }
 
-  return await axiosInstance.get('/booking/list', {
+  return await axiosInstance.get('/inventory/list', {
     params: {
-      username: searchBooking.username,
-      meetingRoomName: searchBooking.meetingRoomName,
-      meetingRoomPosition: searchBooking.meetingRoomPosition,
-      bookingTimeRangeStart,
-      bookingTimeRangeEnd,
+      username: SearchForm.username,
+      goodsName: SearchForm.goodsName,
+      goodsType: SearchForm.goodsType,
+      rangeStartDate,
+      rangeEndDate,
       pageNo: pageNo,
       pageSize: pageSize,
     },
@@ -203,15 +189,15 @@ export async function bookingList(
 }
 
 export async function apply(id: number) {
-  return await axiosInstance.get('/booking/apply/' + id);
+  return await axiosInstance.get('/inventory/apply/' + id);
 }
 
 export async function reject(id: number) {
-  return await axiosInstance.get('/booking/reject/' + id);
+  return await axiosInstance.get('/inventory/reject/' + id);
 }
 
 export async function unbind(id: number) {
-  return await axiosInstance.get('/booking/unbind/' + id);
+  return await axiosInstance.get('/inventory/unbind/' + id);
 }
 
 export async function meetingRoomUsedCount(startTime: string, endTime: string) {

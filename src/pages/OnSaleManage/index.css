@@ -1,9 +1,9 @@
-#bookingManage-container {
+#saleManage-container {
     padding: 20px;
 }
-#bookingManage-container .bookingManage-form {
+#saleManage-container .saleManage-form {
     margin-bottom: 40px;
 }
-#bookingManage-container .ant-form-item {
+#saleManage-container .ant-form-item {
     margin: 10px;
 }

@@ -13,10 +13,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import './index.css';
 import { ColumnsType } from 'antd/es/table';
 import { useForm } from 'antd/es/form/Form';
-import {
-  deleteMeetingRoom,
-  searchGoodsList,
-} from '../../interfaces/interfaces';
+import { deleteGoods, searchGoodsList } from '../../interfaces/interfaces';
 import { CreateModal } from './CreateModal';
 import { UpdateModal } from './UpdateModal';
 import { goodsTypeList } from '../../const/goodsType';
@@ -130,7 +127,7 @@ export function GoodsManage() {
 
   const handleDelete = useCallback(async (id: number) => {
     try {
-      await deleteMeetingRoom(id);
+      await deleteGoods(id);
       message.success('删除成功');
       setRefresh(true);
     } catch (e) {
@@ -188,8 +185,8 @@ export function GoodsManage() {
   }, []);
 
   return (
-    <div id="meetingRoomManage-container">
-      <div className="meetingRoomManage-form">
+    <div id="goodsManage-container">
+      <div className="goodsManage-form">
         <Form
           form={form}
           onFinish={searchGoods}
@@ -231,7 +228,7 @@ export function GoodsManage() {
           </Form.Item>
         </Form>
       </div>
-      <div className="meetingRoomManage-table">
+      <div className="goodsManage-table">
         <Table
           columns={columns}
           dataSource={goodsList}
