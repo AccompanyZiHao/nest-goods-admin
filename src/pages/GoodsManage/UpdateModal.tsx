@@ -1,56 +1,72 @@
 import { Select, Form, Input, InputNumber, Modal, message } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import TextArea from 'antd/es/input/TextArea';
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 
 import { Upload } from './../../components/Upload';
 
-import { createGoods } from '../../interfaces/interfaces';
+import type { CreateGoodsForm, CreateModalProps } from './CreateModal';
+
 import { FormLayout } from './../../const/form';
+import { findGoods, updateGoods } from '../../interfaces/interfaces';
 import { goodsTypeList } from '../../const/goodsType';
 
-export interface CreateModalProps {
-  isOpen: boolean;
-  handleClose: Function;
+interface UpdateGoodsModalProps extends CreateModalProps {
+  id: number;
 }
 
-export interface CreateGoodsForm {
-  name: string;
-  num: number;
-  img: string;
-  purchasePrice: number;
-  sellPrice: number;
-  kind: number;
-  description: string;
+export interface UpdateGoodsForm extends CreateGoodsForm {
+  id: number;
 }
 
-export function CreateModal(props: CreateModalProps) {
-  const [form] = useForm<CreateGoodsForm>();
+export function UpdateModal(props: UpdateGoodsModalProps) {
+  const [form] = useForm<UpdateGoodsForm>();
 
-  const handleOk = useCallback(function () {
-    form
-      .validateFields()
-      .then(async (values) => {
-        values.description = values.description || '';
+  const handleOk = useCallback(async function () {
+    const values = form.getFieldsValue();
 
-        const res = await createGoods(values);
+    values.description = values.description || '';
 
-        if (res.status === 201 || res.status === 200) {
-          message.success('新增成功');
-          form.resetFields();
-          props.handleClose();
-        } else {
-          message.error(res.data.data);
-        }
-      })
-      .catch((res) => {
-        console.log('error', res);
-      });
+    const res = await updateGoods({
+      ...values,
+      id: form.getFieldValue('id'),
+    });
+
+    if (res.status === 201 || res.status === 200) {
+      message.success('更新成功');
+      props.handleClose();
+    } else {
+      message.error(res.data.data);
+    }
   }, []);
+
+  useEffect(() => {
+    async function query(id: number) {
+      const res = await findGoods(id);
+
+      const { data } = res;
+      if (res.status === 200 || res.status === 201) {
+        form.setFieldValue('id', data.data.id);
+        form.setFieldValue('name', data.data.name);
+        form.setFieldValue('kind', data.data.kind);
+        form.setFieldValue('img', data.data.img);
+        form.setFieldValue('purchasePrice', data.data.purchasePrice);
+        form.setFieldValue('num', data.data.num);
+        form.setFieldValue('sellPrice', data.data.sellPrice);
+        form.setFieldValue('description', data.data.description);
+      } else {
+        message.error(res.data.data);
+      }
+    }
+
+    if (props.id) {
+      query(props.id);
+    }
+  }, [form, props.id]);
 
   return (
     <Modal
-      title="新增商品"
+      title="更新商品"
       open={props.isOpen}
       onOk={handleOk}
       onCancel={() => props.handleClose()}

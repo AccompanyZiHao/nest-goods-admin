@@ -18,7 +18,7 @@ import {
   searchGoodsList,
 } from '../../interfaces/interfaces';
 import { CreateModal } from './CreateModal';
-import { UpdateMeetingRoomModal } from './UpdateMeetingRoomModal';
+import { UpdateModal } from './UpdateModal';
 import { goodsTypeList } from '../../const/goodsType';
 
 interface SearchGoods {
@@ -37,7 +37,6 @@ export interface GoodsManageResult {
   isSale: boolean;
   createTime: Date;
   updateTime: Date;
-  //   location
 }
 
 export function GoodsManage() {
@@ -120,7 +119,7 @@ export function GoodsManage() {
                 setUpdateId(record.id);
               }}
             >
-              更新
+              编辑
             </a>
           </div>
         ),
@@ -250,14 +249,14 @@ export function GoodsManage() {
           setRefresh(true);
         }}
       ></CreateModal>
-      <UpdateMeetingRoomModal
+      <UpdateModal
         id={updateId!}
         isOpen={isUpdateModalOpen}
         handleClose={() => {
           setIsUpdateModalOpen(false);
           setRefresh(true);
         }}
-      ></UpdateMeetingRoomModal>
+      ></UpdateModal>
     </div>
   );
 }
