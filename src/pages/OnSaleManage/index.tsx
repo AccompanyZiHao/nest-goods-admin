@@ -85,6 +85,21 @@ export function OnSaleManage() {
       },
     },
     {
+      title: '数量',
+      dataIndex: 'quantity',
+    },
+    {
+      title: '上/下架',
+      dataIndex: 'quantity',
+      render(_, record) {
+        return record.goods.isSale ? '上架' : '下架';
+      },
+    },
+    {
+      title: '货架位置',
+      dataIndex: 'location',
+    },
+    {
       title: '审核状态',
       dataIndex: 'status',
       onFilter: (value, record) => record.status.startsWith(value as string),

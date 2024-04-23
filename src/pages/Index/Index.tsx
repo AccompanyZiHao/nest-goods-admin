@@ -9,7 +9,7 @@ export function Index() {
         <Link to="/" className="sys_name">
           <h1>超市系统-后台管理</h1>
         </Link>
-        <Link to="/user/info_modify">
+        <Link to="/user/info-modify">
           <UserOutlined className="icon" />
         </Link>
       </div>

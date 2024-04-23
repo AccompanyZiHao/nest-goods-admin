@@ -1,6 +1,13 @@
-#meetingRoomManage-container {
-    padding: 20px;
+#goodsManage-container {
+  padding: 20px;
 }
-#meetingRoomManage-container .meetingRoomManage-form {
-    margin-bottom: 40px;
+#goodsManage-container .goodsManage-form {
+  margin-bottom: 40px;
+}
+#goodsManage-container .ant-form-item {
+  margin-top: 10px;
+}
+
+#goodsManage-container .ant-btn {
+  margin-left: 10px;
 }

@@ -44,7 +44,7 @@ export function GoodsManage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [updateId, setUpdateId] = useState<number>();
-  const [refresh, setRefresh] = useState(false);
+  const [refresh, setRefresh] = useState(true);
 
   const columns: ColumnsType<GoodsManageResult> = useMemo(
     () => [
@@ -198,10 +198,6 @@ export function GoodsManage() {
             <Input />
           </Form.Item>
 
-          <Form.Item label="商品类型" name="kind">
-            <Input />
-          </Form.Item>
-
           <Form.Item label="商品ID" name="id">
             <Input />
           </Form.Item>
@@ -215,14 +211,8 @@ export function GoodsManage() {
           </Form.Item>
 
           <Form.Item label=" ">
-            <Button type="primary" htmlType="submit">
-              搜索
-            </Button>
-            <Button
-              type="primary"
-              style={{ background: 'green' }}
-              onClick={() => setIsCreateModalOpen(true)}
-            >
+            <Button htmlType="submit">搜索</Button>
+            <Button type="primary" onClick={() => setIsCreateModalOpen(true)}>
               添加
             </Button>
           </Form.Item>
