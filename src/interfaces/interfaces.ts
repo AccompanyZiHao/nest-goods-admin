@@ -192,8 +192,8 @@ export async function apply(id: number) {
   return await axiosInstance.get('/inventory/apply/' + id);
 }
 
-export async function reject(id: number) {
-  return await axiosInstance.get('/inventory/reject/' + id);
+export async function reject(id: number, content: string) {
+  return await axiosInstance.post('/inventory/reject/', { id, content });
 }
 
 export async function unbind(id: number) {
