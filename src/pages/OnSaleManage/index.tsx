@@ -3,6 +3,7 @@ import {
   DatePicker,
   Form,
   Input,
+  Modal,
   Popconfirm,
   Table,
   TimePicker,
@@ -21,6 +22,7 @@ import './index.css';
 import { UserSearchResult } from '../UserManage/UserManage';
 import { GoodsManageResult } from '../GoodsManage';
 import dayjs from 'dayjs';
+import TextArea from 'antd/es/input/TextArea';
 
 export interface OnSaleSearchForm {
   username: string;
@@ -42,6 +44,12 @@ interface OnSaleSearchResult {
   goods: GoodsManageResult;
 }
 
+interface DialogProps {
+  visible: boolean;
+  handleClose: Function;
+  handleOk: Function;
+}
+
 export function OnSaleManage() {
   const [pageNo, setPageNo] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
@@ -50,16 +58,20 @@ export function OnSaleManage() {
   >([]);
   const [num, setNum] = useState(0);
 
+  const [rowInfo, setRowInfo] = useState(null);
+  const [visible, setVisible] = useState(false);
+
   async function changeStatus(
     id: number,
-    status: 'apply' | 'reject' | 'unbind'
+    status: 'apply' | 'reject' | 'unbind',
+    content?: string
   ) {
     const methods = {
       apply,
       reject,
       unbind,
     };
-    const res = await methods[status](id);
+    const res = await methods[status](id, content);
 
     if (res.status === 201 || res.status === 200) {
       message.success('状态更新成功');
@@ -151,17 +163,24 @@ export function OnSaleManage() {
             <a href="#">通过</a>
           </Popconfirm>
           <br />
-          <Popconfirm
+          {/* <Popconfirm
             title="驳回申请"
             description="确认驳回吗？"
             onConfirm={() => changeStatus(record.id, 'reject')}
             okText="Yes"
             cancelText="No"
+          ></Popconfirm> */}
+          <a
+            href="#"
+            onClick={() => {
+              setRowInfo(record);
+              setVisible(true);
+            }}
           >
-            <a href="#">驳回</a>
-          </Popconfirm>
+            驳回
+          </a>
           <br />
-          <Popconfirm
+          {/* <Popconfirm
             title="解除申请"
             description="确认解除吗？"
             onConfirm={() => changeStatus(record.id, 'unbind')}
@@ -169,7 +188,7 @@ export function OnSaleManage() {
             cancelText="No"
           >
             <a href="#">解除</a>
-          </Popconfirm>
+          </Popconfirm> */}
           <br />
         </div>
       ),
@@ -212,45 +231,91 @@ export function OnSaleManage() {
   };
 
   return (
-    <div id="saleManage-container">
-      <div className="saleManage-form">
-        <Form
-          form={form}
-          onFinish={searchOnSale}
-          name="search"
-          layout="inline"
-          colon={false}
-        >
-          <Form.Item label="操作人" name="username">
-            <Input />
-          </Form.Item>
+    <>
+      <div id="saleManage-container">
+        <div className="saleManage-form">
+          <Form
+            form={form}
+            onFinish={searchOnSale}
+            name="search"
+            layout="inline"
+            colon={false}
+          >
+            <Form.Item label="操作人" name="username">
+              <Input />
+            </Form.Item>
 
-          <Form.Item label="商品名称" name="goodsName">
-            <Input />
-          </Form.Item>
+            <Form.Item label="商品名称" name="goodsName">
+              <Input />
+            </Form.Item>
 
-          <Form.Item label="商品类型" name="goodsType">
-            <Input />
-          </Form.Item>
+            <Form.Item label="商品类型" name="goodsType">
+              <Input />
+            </Form.Item>
 
-          <Form.Item label=" ">
-            <Button type="primary" htmlType="submit">
-              搜索
-            </Button>
-          </Form.Item>
-        </Form>
+            <Form.Item label=" ">
+              <Button type="primary" htmlType="submit">
+                搜索
+              </Button>
+            </Form.Item>
+          </Form>
+        </div>
+        <div className="saleManage-table">
+          <Table
+            columns={columns}
+            dataSource={onSaleSearchResult}
+            pagination={{
+              current: pageNo,
+              pageSize: pageSize,
+              onChange: changePage,
+            }}
+          />
+        </div>
       </div>
-      <div className="saleManage-table">
-        <Table
-          columns={columns}
-          dataSource={onSaleSearchResult}
-          pagination={{
-            current: pageNo,
-            pageSize: pageSize,
-            onChange: changePage,
-          }}
+      <Dialog
+        visible={visible}
+        handleClose={() => {
+          setVisible(false);
+        }}
+        handleOk={(reason) => {
+          changeStatus(rowInfo.id, 'reject', reason);
+          setVisible(false);
+        }}
+      />
+    </>
+  );
+}
+
+function Dialog(props: DialogProps) {
+  const [reason, setReason] = useState('');
+  const onOk = () => {
+    if (!reason) return message.warning('驳回原因不能为空！');
+    props.handleOk(reason);
+  };
+
+  useEffect(() => {
+    if (props.visible) {
+      setReason('');
+    }
+  }, [props.visible]);
+
+  return (
+    <Modal
+      title="驳回原因"
+      open={props.visible}
+      onOk={onOk}
+      onCancel={() => props.handleClose()}
+    >
+      <div style={{ paddingBottom: '20px' }}>
+        <TextArea
+          value={reason}
+          onChange={(e) => setReason(String(e.target.value).trim())}
+          rows={4}
+          showCount
+          placeholder="请输入驳回的原因"
+          maxLength={100}
         />
       </div>
-    </div>
+    </Modal>
   );
 }
