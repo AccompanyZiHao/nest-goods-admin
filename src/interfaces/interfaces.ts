@@ -7,6 +7,8 @@ import { UpdateGoodsForm } from '../pages/GoodsManage/UpdateModal';
 import type { OnSaleSearchForm } from '../pages/OnSaleManage';
 import dayjs from 'dayjs';
 import { BASE_URL } from '../const/base';
+import { SearchCategory } from '../pages/Category';
+import { UpdateCategoryForm } from '../pages/Category/UpdateModal';
 
 const axiosInstance = axios.create({
   baseURL: BASE_URL,
@@ -216,4 +218,32 @@ export async function userBookingCount(startTime: string, endTime: string) {
       endTime,
     },
   });
+}
+
+//*************** 商品类别  ***************/
+
+export async function searchCategoryList(
+  name: string,
+  pageNo: number,
+  pageSize: number
+) {
+  return await axiosInstance.get('/category/list', {
+    params: {
+      name,
+      pageNo,
+      pageSize,
+    },
+  });
+}
+
+export async function createCategory(category: SearchCategory) {
+  return await axiosInstance.post('/category/create', category);
+}
+
+export async function deleteCategory(id: number) {
+  return await axiosInstance.delete('/category/' + id);
+}
+
+export async function updateCategory(category: UpdateCategoryForm) {
+  return await axiosInstance.post('/category/update', category);
 }

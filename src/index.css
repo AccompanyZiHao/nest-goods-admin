@@ -11,3 +11,17 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+#container {
+  padding: 20px;
+}
+#container .form {
+  margin-bottom: 40px;
+}
+#container .ant-form-item {
+  margin-top: 10px;
+}
+
+#container .ant-btn {
+  margin-left: 10px;
+}

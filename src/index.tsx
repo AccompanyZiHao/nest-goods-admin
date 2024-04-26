@@ -12,8 +12,11 @@ import { PasswordModify } from './pages/PasswordModify/PasswordModify';
 import { GoodsManage } from './pages/GoodsManage';
 import { OnSaleManage } from './pages/OnSaleManage';
 import { Statistics } from './pages/Statistics/Statistics';
+import { Category } from './pages/Category';
 import { ConfigProvider } from 'antd';
 import zhCN from 'antd/es/locale/zh_CN';
+
+import { MenuEnum, MenuPath } from './const/menu';
 
 const routes = [
   {
@@ -44,6 +47,10 @@ const routes = [
           {
             path: 'statistics',
             element: <Statistics />,
+          },
+          {
+            path: MenuPath[MenuEnum.category],
+            element: <Category />,
           },
         ],
       },

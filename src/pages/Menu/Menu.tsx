@@ -3,74 +3,60 @@ import { Menu as AntdMenu, MenuProps } from 'antd';
 import './menu.css';
 import { MenuClickEventHandler } from "rc-menu/lib/interface";
 import { router } from "../..";
+import { MenuEnum, MenuPath } from '../../const/menu';
 
 const items: MenuProps['items'] = [
-    {
-        key: '1',
-        label: "商品管理"
-    },
-    {
-        key: '2',
-        label: "上下架管理"
-    },
-    {
-        key: '3',
-        label: "用户管理"
-    },
-    {
-        key: '4',
-        label: "统计"
-    }
+  {
+    key: MenuEnum.goodsManage,
+    label: '商品管理',
+  },
+  {
+    key: MenuEnum.shelfRequest,
+    label: '上下架管理',
+  },
+  {
+    key: MenuEnum.userManage,
+    label: '用户管理',
+  },
+  {
+    key: MenuEnum.statistics,
+    label: '统计',
+  },
+  {
+    key: MenuEnum.category,
+    label: '商品类别',
+  },
 ];
 
+// 菜单跳转
 const handleMenuItemClick: MenuClickEventHandler = (info) => {
-    let path = '';
-    switch(info.key) {
-        case '1':
-            path = '/goods-manage';
-            break;
-        case '2':
-            path = '/on-sale-manage';
-            break;
-        case '3':
-            path = '/user-manage';
-            break;
-        case '4':
-            path = '/statistics';
-            break;
-    }
-    router.navigate(path);
-}
-
+  router.navigate(MenuPath[info.key]);
+};
 
 export function Menu() {
+  const location = useLocation();
 
-    const location = useLocation();
+  // 页面刷新 根据 MenuPath 找到当前的 key 并设置给菜单
+  function getSelectedKeys() {
+    const curMenu = Object.entries(MenuPath).find(
+      ([key, value]) => value === location.pathname
+    );
 
-    function getSelectedKeys() {
-        if (location.pathname === '/user-manage') {
-          return ['3'];
-        } else if (location.pathname === '/on-sale-manage') {
-          return ['2'];
-        } else if (location.pathname === '/goods-manage') {
-          return ['1'];
-        } else if (location.pathname === '/statistics') {
-          return ['4'];
-        } else {
-          return ['1'];
-        }
-    }
+    return [String(curMenu[0] || 1)];
+  }
 
-    return <div id="menu-container">
-        <div className="menu-area">
-            <AntdMenu
-                defaultSelectedKeys={getSelectedKeys()}
-                items={items}
-                onClick={handleMenuItemClick}
-            />
-        </div>
-        <div className="content-area">
-            <Outlet></Outlet>
-        </div>
+  return (
+    <div id="menu-container">
+      <div className="menu-area">
+        <AntdMenu
+          defaultSelectedKeys={getSelectedKeys()}
+          items={items}
+          onClick={handleMenuItemClick}
+        />
+      </div>
+      <div className="content-area">
+        <Outlet></Outlet>
+      </div>
     </div>
+  );
 }
