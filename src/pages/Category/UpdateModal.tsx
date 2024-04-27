@@ -34,7 +34,7 @@ export function UpdateCategoryModal(props: UpdateModalProps) {
 
   // 弹窗数据回显
   useEffect(() => {
-    if (props.isOpen && props.row?.category_id) {
+    if (props.isOpen && props.row && props.row.category_id) {
       form.setFieldValue('category_name', props.row.category_name);
       form.setFieldValue('category_id', props.row.category_id);
     }
