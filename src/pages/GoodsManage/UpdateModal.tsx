@@ -10,6 +10,7 @@ import type { CreateGoodsForm, CreateModalProps } from './CreateModal';
 import { FormLayout } from './../../const/form';
 import { findGoods, updateGoods } from '../../interfaces/interfaces';
 import { goodsTypeList } from '../../const/goodsType';
+import { CategorySelect } from '../Category/CategorySelect';
 
 interface UpdateGoodsModalProps extends CreateModalProps {
   id: number;
@@ -119,7 +120,7 @@ export function UpdateModal(props: UpdateGoodsModalProps) {
           validateTrigger="onBlur"
           rules={[{ required: true, message: '请选择商品类型!' }]}
         >
-          <Select options={goodsTypeList}></Select>
+          <CategorySelect />
         </Form.Item>
         <Form.Item label="描述" name="description">
           <TextArea />

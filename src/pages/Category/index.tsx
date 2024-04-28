@@ -172,6 +172,7 @@ export function Category() {
             current: pageNo,
             pageSize: pageSize,
             onChange: changePage,
+            total,
           }}
         />
       </div>

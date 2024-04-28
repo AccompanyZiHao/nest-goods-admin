@@ -17,10 +17,12 @@ import { deleteGoods, searchGoodsList } from '../../interfaces/interfaces';
 import { CreateModal } from './CreateModal';
 import { UpdateModal } from './UpdateModal';
 import { goodsTypeList } from '../../const/goodsType';
+import { CategorySelect } from '../Category/CategorySelect';
+import { BASE_URL, DEFAULT_IMAGE } from '../../const/base';
 
 interface SearchGoods {
   name: string;
-  id: number;
+  // id: number;
   kind: number;
 }
 
@@ -59,13 +61,16 @@ export function GoodsManage() {
       {
         title: '商品类型',
         dataIndex: 'kind',
+        render: (_, record) => {
+          return <CategorySelect value={record.kind} isText={true} />;
+        },
       },
       {
         title: '商品图片',
         dataIndex: 'img',
         render: (_, record) => (
           <div>
-            <img src={record.img} alt="" />
+            <Image width={100} src={BASE_URL + (record.img || DEFAULT_IMAGE)} />
           </div>
         ),
       },
@@ -103,21 +108,22 @@ export function GoodsManage() {
               title="商品删除"
               description="确认删除吗？"
               onConfirm={() => handleDelete(record.id)}
-              okText="Yes"
-              cancelText="No"
             >
-              <a href="#">删除</a>
+              <Button type="primary" danger size="small">
+                删除
+              </Button>
             </Popconfirm>
-            <br />
-            <a
-              href="#"
+            <Button
+              type="primary"
+              size="small"
+              style={{ marginTop: '10px' }}
               onClick={() => {
                 setIsUpdateModalOpen(true);
                 setUpdateId(record.id);
               }}
             >
               编辑
-            </a>
+            </Button>
           </div>
         ),
       },
@@ -136,48 +142,48 @@ export function GoodsManage() {
     }
   }, []);
 
-  const searchGoods = useCallback(
-    async (values: SearchGoods, initPage?: number) => {
-      const res = await searchGoodsList(
-        values.name,
-        values.id,
-        values.kind,
-        initPage ? 1 : pageNo,
-        pageSize
+  const searchGoods = async (values: SearchGoods, initPage?: number) => {
+    const res = await searchGoodsList(
+      values.name,
+      // values.id,
+      values.kind,
+      initPage ? 1 : pageNo,
+      pageSize
+    );
+
+    const { data } = res.data;
+    if (res.status === 201 || res.status === 200) {
+      setGoodsList(
+        data.goods.map((item: GoodsManageResult) => {
+          return {
+            key: item.id,
+            ...item,
+          };
+        })
       );
 
-      const { data } = res.data;
-      if (res.status === 201 || res.status === 200) {
-        setGoodsList(
-          data.goods.map((item: GoodsManageResult) => {
-            return {
-              key: item.id,
-              ...item,
-            };
-          })
-        );
+      setTotal(data.totalCount);
+    } else {
+      message.error(data || '系统繁忙，请稍后再试');
+    }
 
-        setTotal(data.totalCount);
-      } else {
-        message.error(data || '系统繁忙，请稍后再试');
-      }
+    setRefresh(false);
+  };
 
-      setRefresh(false);
-    },
-    []
-  );
+  const [form] = useForm<SearchGoods>();
 
-  const [form] = useForm();
+  useEffect(() => {
+    setRefresh(true);
+  }, [pageNo, pageSize]);
 
   useEffect(() => {
     if (refresh === true) {
       searchGoods({
         name: form.getFieldValue('name'),
-        id: form.getFieldValue('id'),
         kind: form.getFieldValue('kind'),
       });
     }
-  }, [pageNo, pageSize, refresh]);
+  }, [refresh]);
 
   const changePage = useCallback(function (pageNo: number, pageSize: number) {
     setPageNo(pageNo);
@@ -189,7 +195,7 @@ export function GoodsManage() {
       <div className="goodsManage-form">
         <Form
           form={form}
-          onFinish={searchGoods}
+          onFinish={() => setPageNo(1)}
           name="search"
           layout="inline"
           colon={false}
@@ -198,17 +204,17 @@ export function GoodsManage() {
             <Input />
           </Form.Item>
 
-          <Form.Item label="商品ID" name="id">
+          {/* <Form.Item label="商品ID" name="id">
             <Input />
-          </Form.Item>
+          </Form.Item> */}
 
           <Form.Item label="商品类型" name="kind" style={{ width: 200 }}>
-            <Select options={goodsTypeList}></Select>
+            <CategorySelect />
           </Form.Item>
 
-          <Form.Item label="货架位置" name="location">
+          {/* <Form.Item label="货架位置" name="location">
             <Input />
-          </Form.Item>
+          </Form.Item> */}
 
           <Form.Item label=" ">
             <Button htmlType="submit">搜索</Button>
@@ -226,6 +232,7 @@ export function GoodsManage() {
             current: pageNo,
             pageSize: pageSize,
             onChange: changePage,
+            total,
           }}
         />
       </div>
@@ -233,6 +240,7 @@ export function GoodsManage() {
         isOpen={isCreateModalOpen}
         handleClose={() => {
           setIsCreateModalOpen(false);
+          setPageNo(1);
           setRefresh(true);
         }}
       ></CreateModal>
@@ -241,6 +249,7 @@ export function GoodsManage() {
         isOpen={isUpdateModalOpen}
         handleClose={() => {
           setIsUpdateModalOpen(false);
+          setPageNo(1);
           setRefresh(true);
         }}
       ></UpdateModal>

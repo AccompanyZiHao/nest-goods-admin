@@ -35,10 +35,12 @@ export function HeadPicUpload(props: HeadPicUploadProps) {
 
     onChange = props.onChange!
 
-    return props?.value ? <div>
-        <img src={'http://localhost:3005/' + props.value} alt="头像" width="100" height="100"/>
+    return props?.value ? (
+      <div>
+        <img src={BASE_URL + props.value} alt="头像" width="100" height="100" />
         {dragger}
-    </div>: <div>
-        {dragger}
-    </div>
+      </div>
+    ) : (
+      <div>{dragger}</div>
+    );
 }

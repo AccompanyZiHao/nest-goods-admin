@@ -6,6 +6,7 @@ import {
   Modal,
   Popconfirm,
   Table,
+  Tag,
   TimePicker,
   message,
 } from 'antd';
@@ -14,7 +15,7 @@ import { ColumnsType } from 'antd/es/table';
 import { useForm } from 'antd/es/form/Form';
 import {
   apply,
-  inventoryList,
+  shelfRequestList,
   reject,
   unbind,
 } from '../../interfaces/interfaces';
@@ -32,12 +33,14 @@ export interface OnSaleSearchForm {
   rangeEndDate: Date;
 }
 
-interface OnSaleSearchResult {
-  id: number;
+export interface OnSaleSearchResult {
+  request_id: number;
   startTime: string;
   endTime: string;
-  status: string;
-  note: string;
+  request_status: number;
+  request_quantity: number;
+  request_type: number;
+  refuse_reason: string;
   createTime: string;
   updateTime: string;
   user: UserSearchResult;
@@ -62,7 +65,7 @@ export function OnSaleManage() {
   const [visible, setVisible] = useState(false);
 
   async function changeStatus(
-    id: number,
+    row: OnSaleSearchResult,
     status: 'apply' | 'reject' | 'unbind',
     content?: string
   ) {
@@ -71,7 +74,7 @@ export function OnSaleManage() {
       reject,
       unbind,
     };
-    const res = await methods[status](id, content);
+    const res = await methods[status](row, content);
 
     if (res.status === 201 || res.status === 200) {
       message.success('状态更新成功');
@@ -98,41 +101,30 @@ export function OnSaleManage() {
     },
     {
       title: '数量',
-      dataIndex: 'quantity',
+      dataIndex: 'request_quantity',
     },
     {
       title: '上/下架',
-      dataIndex: 'quantity',
+      dataIndex: 'request_type',
       render(_, record) {
-        return record.goods.isSale ? '上架' : '下架';
+        return record.request_type === 1 ? '上架' : '下架';
       },
     },
-    {
-      title: '货架位置',
-      dataIndex: 'location',
-    },
+    // {
+    //   title: '货架位置',
+    //   dataIndex: 'location',
+    // },
     {
       title: '审核状态',
-      dataIndex: 'status',
-      onFilter: (value, record) => record.status.startsWith(value as string),
-      filters: [
-        {
-          text: '审核通过',
-          value: '审核通过',
-        },
-        {
-          text: '审核驳回',
-          value: '审核驳回',
-        },
-        {
-          text: '申请中',
-          value: '申请中',
-        },
-        {
-          text: '已解除',
-          value: '已解除',
-        },
-      ],
+      dataIndex: 'request_status',
+      render(_, record) {
+        return {
+          1: <Tag color="processing">等待中</Tag>,
+          2: <Tag color="success">成功</Tag>,
+          3: <Tag color="error">失败</Tag>,
+          4: <Tag color="default">已取消</Tag>,
+        }[record.request_status];
+      },
     },
     {
       title: '操作时间',
@@ -143,7 +135,7 @@ export function OnSaleManage() {
     },
     {
       title: '备注',
-      dataIndex: 'note',
+      dataIndex: 'refuse_reason',
     },
     {
       title: '描述',
@@ -151,36 +143,37 @@ export function OnSaleManage() {
     },
     {
       title: '操作',
-      render: (_, record) => (
-        <div>
-          <Popconfirm
-            title="通过申请"
-            description="确认通过吗？"
-            onConfirm={() => changeStatus(record.id, 'apply')}
-            okText="Yes"
-            cancelText="No"
-          >
-            <a href="#">通过</a>
-          </Popconfirm>
-          <br />
-          {/* <Popconfirm
+      render: (_, record) =>
+        record.request_status === 1 && (
+          <div>
+            <Popconfirm
+              title="通过申请"
+              description="确认通过吗？"
+              onConfirm={() => changeStatus(record, 'apply')}
+              okText="Yes"
+              cancelText="No"
+            >
+              <a href="#">通过</a>
+            </Popconfirm>
+            <br />
+            {/* <Popconfirm
             title="驳回申请"
             description="确认驳回吗？"
             onConfirm={() => changeStatus(record.id, 'reject')}
             okText="Yes"
             cancelText="No"
           ></Popconfirm> */}
-          <a
-            href="#"
-            onClick={() => {
-              setRowInfo(record);
-              setVisible(true);
-            }}
-          >
-            驳回
-          </a>
-          <br />
-          {/* <Popconfirm
+            <a
+              href="#"
+              onClick={() => {
+                setRowInfo(record);
+                setVisible(true);
+              }}
+            >
+              驳回
+            </a>
+            <br />
+            {/* <Popconfirm
             title="解除申请"
             description="确认解除吗？"
             onConfirm={() => changeStatus(record.id, 'unbind')}
@@ -189,21 +182,21 @@ export function OnSaleManage() {
           >
             <a href="#">解除</a>
           </Popconfirm> */}
-          <br />
-        </div>
-      ),
+            <br />
+          </div>
+        ),
     },
   ];
 
   const searchOnSale = async (values: OnSaleSearchForm) => {
-    const res = await inventoryList(values, pageNo, pageSize);
+    const res = await shelfRequestList(values, pageNo, pageSize);
 
     const { data } = res.data;
     if (res.status === 201 || res.status === 200) {
       setOnSaleSearchResult(
         data.list.map((item: OnSaleSearchResult) => {
           return {
-            key: item.id,
+            key: item.request_id,
             ...item,
           };
         })
@@ -278,7 +271,7 @@ export function OnSaleManage() {
           setVisible(false);
         }}
         handleOk={(reason) => {
-          changeStatus(rowInfo.id, 'reject', reason);
+          changeStatus(rowInfo, 'reject', reason);
           setVisible(false);
         }}
       />
@@ -309,7 +302,7 @@ function Dialog(props: DialogProps) {
       <div style={{ paddingBottom: '20px' }}>
         <TextArea
           value={reason}
-          onChange={(e) => setReason(String(e.target.value).trim())}
+          onChange={(e) => setReason(String(e.target.value))}
           rows={4}
           showCount
           placeholder="请输入驳回的原因"

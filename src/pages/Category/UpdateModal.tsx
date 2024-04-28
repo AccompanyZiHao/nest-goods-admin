@@ -1,7 +1,7 @@
 import { Form, Input, message, Modal } from 'antd';
 import { FormLayout } from '../../const/form';
 import { updateCategory } from '../../interfaces/interfaces';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useForm } from 'antd/es/form/Form';
 import { CategoryResult, SearchCategory } from '.';
 import { CreateCategoryModalProps } from './CreateModal';
@@ -15,12 +15,14 @@ export interface UpdateCategoryForm extends SearchCategory {
 export function UpdateCategoryModal(props: UpdateModalProps) {
   const [form] = useForm<UpdateCategoryForm>();
 
+  const [categoryId, setCategoryId] = useState<number>(0);
+
   // 编辑
-  const handleOk = useCallback(() => {
+  const handleOk = () => {
     form.validateFields().then(async (values) => {
       const res = await updateCategory({
         ...values,
-        category_id: props.row.category_id,
+        category_id: categoryId,
       });
       if (res.status === 201 || res.status === 200) {
         message.success('新增成功');
@@ -30,13 +32,15 @@ export function UpdateCategoryModal(props: UpdateModalProps) {
         message.error(res.data.data);
       }
     });
-  }, []);
+  };
 
   // 弹窗数据回显
   useEffect(() => {
     if (props.isOpen && props.row && props.row.category_id) {
       form.setFieldValue('category_name', props.row.category_name);
-      form.setFieldValue('category_id', props.row.category_id);
+      const id = props.row.category_id;
+
+      setCategoryId(id);
     }
   }, [props.isOpen, props.row]);
 

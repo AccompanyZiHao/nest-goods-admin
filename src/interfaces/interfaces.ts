@@ -4,7 +4,10 @@ import { UserInfo } from '../pages/InfoModify/InfoModify';
 import { UpdatePassword } from '../pages/PasswordModify/PasswordModify';
 import { CreateGoodsForm } from '../pages/GoodsManage/CreateModal';
 import { UpdateGoodsForm } from '../pages/GoodsManage/UpdateModal';
-import type { OnSaleSearchForm } from '../pages/OnSaleManage';
+import type {
+  OnSaleSearchForm,
+  OnSaleSearchResult,
+} from '../pages/OnSaleManage';
 import dayjs from 'dayjs';
 import { BASE_URL } from '../const/base';
 import { SearchCategory } from '../pages/Category';
@@ -86,9 +89,9 @@ export async function userSearch(
 ) {
   return await axiosInstance.get('/user/list', {
     params: {
-      username,
-      nickName,
-      email,
+      username: username?.trim(),
+      nickName: nickName?.trim(),
+      email: email?.trim(),
       pageNo,
       pageSize,
     },
@@ -129,15 +132,13 @@ export async function updatePassword(data: UpdatePassword) {
 
 export async function searchGoodsList(
   name: string,
-  id: number,
   kind: number,
   pageNo: number,
   pageSize: number
 ) {
   return await axiosInstance.get('/goods/list', {
     params: {
-      name,
-      id,
+      name: name?.trim(),
       kind,
       pageNo,
       pageSize,
@@ -161,7 +162,7 @@ export async function findGoods(id: number) {
   return await axiosInstance.get('/goods/' + id);
 }
 
-export async function inventoryList(
+export async function shelfRequestList(
   SearchForm: OnSaleSearchForm,
   pageNo: number,
   pageSize: number
@@ -177,10 +178,10 @@ export async function inventoryList(
     rangeEndDate = dayjs(SearchForm.rangeEndDate).format('YYYY-MM-DD');
   }
 
-  return await axiosInstance.get('/inventory/list', {
+  return await axiosInstance.get('/shelf-request/list', {
     params: {
       username: SearchForm.username,
-      goodsName: SearchForm.goodsName,
+      goodsName: SearchForm.goodsName?.trim(),
       goodsType: SearchForm.goodsType,
       rangeStartDate,
       rangeEndDate,
@@ -190,16 +191,23 @@ export async function inventoryList(
   });
 }
 
-export async function apply(id: number) {
-  return await axiosInstance.get('/inventory/apply/' + id);
+export async function apply(row: OnSaleSearchResult) {
+  return await axiosInstance.get(
+    `/shelf-request/apply/${row.request_id}?goodsId=${row.goods.id}&status=${
+      row.request_type === 1
+    }`
+  );
 }
 
-export async function reject(id: number, content: string) {
-  return await axiosInstance.post('/inventory/reject/', { id, content });
+export async function reject(row: OnSaleSearchResult, content: string) {
+  return await axiosInstance.post('/shelf-request/reject/', {
+    id: row.request_id,
+    content,
+  });
 }
 
-export async function unbind(id: number) {
-  return await axiosInstance.get('/inventory/unbind/' + id);
+export async function unbind(row: OnSaleSearchResult) {
+  return await axiosInstance.get('/shelf-request/unbind/' + row.request_id);
 }
 
 export async function meetingRoomUsedCount(startTime: string, endTime: string) {
@@ -223,13 +231,13 @@ export async function userBookingCount(startTime: string, endTime: string) {
 //*************** 商品类别  ***************/
 
 export async function searchCategoryList(
-  name: string,
-  pageNo: number,
-  pageSize: number
+  name?: string,
+  pageNo?: number,
+  pageSize?: number
 ) {
   return await axiosInstance.get('/category/list', {
     params: {
-      name,
+      name: name?.trim(),
       pageNo,
       pageSize,
     },

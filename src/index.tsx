@@ -41,7 +41,7 @@ const routes = [
             element: <GoodsManage />,
           },
           {
-            path: 'on-sale-manage',
+            path: 'shelf-request',
             element: <OnSaleManage />,
           },
           {

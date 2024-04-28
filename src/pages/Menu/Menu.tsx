@@ -39,8 +39,6 @@ export function Menu() {
   // 页面刷新 根据 MenuPath 找到当前的 key 并设置给菜单
   function getSelectedKeys() {
 
-    console.log('MenuPath ===', MenuPath);
-
     const curMenu = Object.entries(MenuPath).find(
       ([key, value]) => value === location.pathname
     );

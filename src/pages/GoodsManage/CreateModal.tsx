@@ -8,6 +8,7 @@ import { Upload } from './../../components/Upload';
 import { createGoods } from '../../interfaces/interfaces';
 import { FormLayout } from './../../const/form';
 import { goodsTypeList } from '../../const/goodsType';
+import { CategorySelect } from '../Category/CategorySelect';
 
 export interface CreateModalProps {
   isOpen: boolean;
@@ -103,7 +104,7 @@ export function CreateModal(props: CreateModalProps) {
           validateTrigger="onBlur"
           rules={[{ required: true, message: '请选择商品类型!' }]}
         >
-          <Select options={goodsTypeList}></Select>
+          <CategorySelect />
         </Form.Item>
         <Form.Item label="描述" name="description">
           <TextArea />
