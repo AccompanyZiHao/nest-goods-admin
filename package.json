@@ -1,5 +1,5 @@
 {
-  "name": "system_frontend_admin",
+  "name": "nest-goods-admin",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
