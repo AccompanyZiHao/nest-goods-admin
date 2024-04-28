@@ -210,8 +210,8 @@ export async function unbind(row: OnSaleSearchResult) {
   return await axiosInstance.get('/shelf-request/unbind/' + row.request_id);
 }
 
-export async function meetingRoomUsedCount(startTime: string, endTime: string) {
-  return await axiosInstance.get('/statistic/meetingRoomUsedCount', {
+export async function goodsUsedCount(startTime: string, endTime: string) {
+  return await axiosInstance.get('/statistic/goodsUsedCount', {
     params: {
       startTime,
       endTime,
@@ -219,8 +219,11 @@ export async function meetingRoomUsedCount(startTime: string, endTime: string) {
   });
 }
 
-export async function userBookingCount(startTime: string, endTime: string) {
-  return await axiosInstance.get('/statistic/userBookingCount', {
+export async function userShelfRequestCount(
+  startTime: string,
+  endTime: string
+) {
+  return await axiosInstance.get('/statistic/userShelfRequestCount', {
     params: {
       startTime,
       endTime,
