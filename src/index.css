@@ -25,3 +25,13 @@ code {
 #container .ant-btn {
   margin-left: 10px;
 }
+
+.dsf{
+  display: flex;
+}
+.aic{
+  align-items: center;
+}
+.jcc{
+  justify-content: center;
+}

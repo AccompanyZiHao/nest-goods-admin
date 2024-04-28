@@ -36,6 +36,9 @@ const dragger = (
 export function Upload(props: UploadProps) {
   onChange = props.onChange!;
 
+  console.log('props.vlaue', props);
+
+
   return props?.value ? (
     <div>
       <img src={BASE_URL + props.value} alt="图片" width="100" height="100" />

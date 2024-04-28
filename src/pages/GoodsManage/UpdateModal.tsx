@@ -66,12 +66,7 @@ export function UpdateModal(props: UpdateGoodsModalProps) {
   }, [form, props.id]);
 
   return (
-    <Modal
-      title="更新商品"
-      open={props.isOpen}
-      onOk={handleOk}
-      onCancel={() => props.handleClose()}
-    >
+    <Modal title="更新商品" open={props.isOpen} onOk={handleOk} onCancel={() => props.handleClose()}>
       <Form form={form} colon={false} {...FormLayout}>
         <Form.Item
           label="商品名称"

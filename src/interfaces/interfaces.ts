@@ -114,8 +114,10 @@ export async function updateInfo(data: UserInfo) {
   return await axiosInstance.post('/user/admin/update', data);
 }
 
-export async function updateUserInfoCaptcha() {
-  return await axiosInstance.get('/user/update/captcha');
+export async function updateUserInfoCaptcha(address: string) {
+  return await axiosInstance.get('/user/update/captcha', {
+    params: { address },
+  });
 }
 
 export async function updatePasswordCaptcha(email: string) {
@@ -130,12 +132,7 @@ export async function updatePassword(data: UpdatePassword) {
   return await axiosInstance.post('/user/admin/update_password', data);
 }
 
-export async function searchGoodsList(
-  name: string,
-  kind: number,
-  pageNo: number,
-  pageSize: number
-) {
+export async function searchGoodsList(name: string, kind: number, pageNo: number, pageSize: number) {
   return await axiosInstance.get('/goods/list', {
     params: {
       name: name?.trim(),
@@ -162,11 +159,7 @@ export async function findGoods(id: number) {
   return await axiosInstance.get('/goods/' + id);
 }
 
-export async function shelfRequestList(
-  SearchForm: OnSaleSearchForm,
-  pageNo: number,
-  pageSize: number
-) {
+export async function shelfRequestList(SearchForm: OnSaleSearchForm, pageNo: number, pageSize: number) {
   let rangeStartDate;
   let rangeEndDate;
 
@@ -193,9 +186,7 @@ export async function shelfRequestList(
 
 export async function apply(row: OnSaleSearchResult) {
   return await axiosInstance.get(
-    `/shelf-request/apply/${row.request_id}?goodsId=${row.goods.id}&status=${
-      row.request_type === 1
-    }`
+    `/shelf-request/apply/${row.request_id}?goodsId=${row.goods.id}&status=${row.request_type === 1}`
   );
 }
 
@@ -219,10 +210,7 @@ export async function goodsUsedCount(startTime: string, endTime: string) {
   });
 }
 
-export async function userShelfRequestCount(
-  startTime: string,
-  endTime: string
-) {
+export async function userShelfRequestCount(startTime: string, endTime: string) {
   return await axiosInstance.get('/statistic/userShelfRequestCount', {
     params: {
       startTime,
@@ -233,11 +221,7 @@ export async function userShelfRequestCount(
 
 //*************** 商品类别  ***************/
 
-export async function searchCategoryList(
-  name?: string,
-  pageNo?: number,
-  pageSize?: number
-) {
+export async function searchCategoryList(name?: string, pageNo?: number, pageSize?: number) {
   return await axiosInstance.get('/category/list', {
     params: {
       name: name?.trim(),
@@ -257,4 +241,10 @@ export async function deleteCategory(id: number) {
 
 export async function updateCategory(category: UpdateCategoryForm) {
   return await axiosInstance.post('/category/update', category);
+}
+
+//*************** 退出 ***************/
+
+export async function logout() {
+  return await axiosInstance.post('/user/logout');
 }

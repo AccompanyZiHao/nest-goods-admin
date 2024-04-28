@@ -3,23 +3,32 @@ import { Menu as AntdMenu, MenuProps } from 'antd';
 import './menu.css';
 import { router } from "../..";
 import { MenuClickEventHandler } from "rc-menu/lib/interface";
+import { logout as logoutApi } from '../../interfaces/interfaces';
 
 const items: MenuProps['items'] = [
-    {
-        key: '1',
-        label: "信息修改"
-    },
-    {
-        key: '2',
-        label: "密码修改"
-    }
+  {
+    key: '1',
+    label: '信息修改',
+  },
+  {
+    key: '2',
+    label: '密码修改',
+  },
+  {
+    key: '3',
+    label: '退出',
+  },
 ];
 
 const handleMenuItemClick: MenuClickEventHandler = (info) => {
   if (info.key === '1') {
     router.navigate('/user/info-modify');
-  } else {
+  } else if (info.key === '2') {
     router.navigate('/user/password-modify');
+  } else if (info.key === '3') {
+    logoutApi();
+    localStorage.clear();
+    router.navigate('/login');
   }
 };
 
