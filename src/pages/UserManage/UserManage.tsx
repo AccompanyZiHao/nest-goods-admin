@@ -60,29 +60,40 @@ export function UserManage() {
       {
         title: '操作',
         render: (_, record) =>
-          !record.isAdmin && (
+          !record.isAdmin &&
+          (record.isFrozen ? (
+            <Button
+              type="primary"
+              size="small"
+              onClick={() => {
+                freezeUser(record);
+              }}
+            >
+              解冻
+            </Button>
+          ) : (
             <Button
               type="primary"
               size="small"
               danger
               onClick={() => {
-                freezeUser(record.id);
+                freezeUser(record);
               }}
             >
               冻结
             </Button>
-          ),
+          )),
       },
     ],
     []
   );
 
-  const freezeUser = useCallback(async (id: number) => {
-    const res = await freeze(id);
+  const freezeUser = useCallback(async (user: UserSearchResult) => {
+    const res = await freeze({ status: !user.isFrozen, id: user.id });
 
     const { data } = res.data;
     if (res.status === 201 || res.status === 200) {
-      message.success('冻结成功');
+      message.success(user.isFrozen ? '解冻成功！' : '冻结成功！');
       setNum(Math.random());
     } else {
       message.error(data || '系统繁忙，请稍后再试');

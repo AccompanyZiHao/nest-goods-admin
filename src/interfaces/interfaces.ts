@@ -98,11 +98,9 @@ export async function userSearch(
   });
 }
 
-export async function freeze(id: number) {
+export async function freeze(params) {
   return await axiosInstance.get('/user/freeze', {
-    params: {
-      id,
-    },
+    params,
   });
 }
 
