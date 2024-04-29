@@ -143,8 +143,10 @@ export function Statistics() {
           </Form.Item>
         </Form>
       </div>
-      <div className="statistics-chart" ref={containerRef}></div>
-      <div className="statistics-chart" ref={containerRef2}></div>
+      <div className="dsf">
+        <div className="statistics-chart" ref={containerRef}></div>
+        <div className="statistics-chart" ref={containerRef2}></div>
+      </div>
     </div>
   );
 }
