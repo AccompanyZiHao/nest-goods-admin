@@ -24,6 +24,7 @@ import { UserSearchResult } from '../UserManage/UserManage';
 import { GoodsManageResult } from '../GoodsManage';
 import dayjs from 'dayjs';
 import TextArea from 'antd/es/input/TextArea';
+import { showConfirm } from '../../components/confirm';
 
 export interface OnSaleSearchForm {
   username: string;
@@ -56,19 +57,14 @@ interface DialogProps {
 export function OnSaleManage() {
   const [pageNo, setPageNo] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
-  const [onSaleSearchResult, setOnSaleSearchResult] = useState<
-    Array<OnSaleSearchResult>
-  >([]);
+  const [onSaleSearchResult, setOnSaleSearchResult] = useState<Array<OnSaleSearchResult>>([]);
   const [num, setNum] = useState(0);
+  const [total, setTotal] = useState(0);
 
   const [rowInfo, setRowInfo] = useState(null);
   const [visible, setVisible] = useState(false);
 
-  async function changeStatus(
-    row: OnSaleSearchResult,
-    status: 'apply' | 'reject' | 'unbind',
-    content?: string
-  ) {
+  async function changeStatus(row: OnSaleSearchResult, status: 'apply' | 'reject' | 'unbind', content?: string) {
     const methods = {
       apply,
       reject,
@@ -119,10 +115,10 @@ export function OnSaleManage() {
       dataIndex: 'request_status',
       render(_, record) {
         return {
-          1: <Tag color="processing">等待中</Tag>,
-          2: <Tag color="success">成功</Tag>,
-          3: <Tag color="error">失败</Tag>,
-          4: <Tag color="default">已取消</Tag>,
+          1: <Tag color="processing">审核中</Tag>,
+          2: <Tag color="success">审核通过</Tag>,
+          3: <Tag color="error">审核不通过</Tag>,
+          4: <Tag color="default">审核已取消</Tag>,
         }[record.request_status];
       },
     },
@@ -139,40 +135,42 @@ export function OnSaleManage() {
     },
     {
       title: '备注',
-      dataIndex: 'description',
+      dataIndex: 'note',
     },
     {
       title: '操作',
       render: (_, record) =>
         record.request_status === 1 && (
           <div>
-            <Popconfirm
-              title="通过申请"
-              description="确认通过吗？"
-              onConfirm={() => changeStatus(record, 'apply')}
-              okText="Yes"
-              cancelText="No"
+            <Button
+              type="primary"
+              size="small"
+              onClick={() =>
+                showConfirm(
+                  {
+                    content: '确认此记录通过审核么',
+                  },
+                  () => {
+                    changeStatus(record, 'apply');
+                  }
+                )
+              }
+              style={{ marginRight: '10px' }}
             >
-              <a href="#">通过</a>
-            </Popconfirm>
-            <br />
-            {/* <Popconfirm
-            title="驳回申请"
-            description="确认驳回吗？"
-            onConfirm={() => changeStatus(record.id, 'reject')}
-            okText="Yes"
-            cancelText="No"
-          ></Popconfirm> */}
-            <a
-              href="#"
+              通过
+            </Button>
+
+            <Button
+              type="primary"
+              size="small"
+              danger
               onClick={() => {
                 setRowInfo(record);
                 setVisible(true);
               }}
             >
               驳回
-            </a>
-            <br />
+            </Button>
             {/* <Popconfirm
             title="解除申请"
             description="确认解除吗？"
@@ -201,6 +199,8 @@ export function OnSaleManage() {
           };
         })
       );
+
+      setTotal(data.totalCount);
     } else {
       message.error(data || '系统繁忙，请稍后再试');
     }
@@ -229,7 +229,9 @@ export function OnSaleManage() {
         <div className="saleManage-form">
           <Form
             form={form}
-            onFinish={searchOnSale}
+            onFinish={() => {
+              setPageNo(1);
+            }}
             name="search"
             layout="inline"
             colon={false}
@@ -261,6 +263,7 @@ export function OnSaleManage() {
               current: pageNo,
               pageSize: pageSize,
               onChange: changePage,
+              total,
             }}
           />
         </div>

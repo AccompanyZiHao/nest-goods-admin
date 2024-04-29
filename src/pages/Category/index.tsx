@@ -9,6 +9,7 @@ import {
 
 import { CreateCategoryModal } from './CreateModal';
 import { UpdateCategoryModal } from './UpdateModal';
+import { showConfirm } from '../../components/confirm';
 
 export interface SearchCategory {
   category_name: string;
@@ -61,15 +62,24 @@ export function Category() {
         title: '操作',
         render: (_, record) => (
           <div>
-            <Popconfirm
-              title="商品删除"
-              description="确认删除吗？"
-              onConfirm={() => handleDelete(record.category_id)}
-              okText="Yes"
-              cancelText="No"
+            <Button
+              type="primary"
+              size="small"
+              danger
+              onClick={() =>
+                showConfirm(
+                  {
+                    content: '确认删除此商品类别吗？',
+                  },
+                  () => {
+                    handleDelete(record.category_id);
+                  }
+                )
+              }
             >
-              <Button>删除</Button>
-            </Popconfirm>
+              删除
+            </Button>
+
             <Button
               type="primary"
               size="small"
