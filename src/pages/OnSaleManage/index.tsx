@@ -231,6 +231,7 @@ export function OnSaleManage() {
             form={form}
             onFinish={() => {
               setPageNo(1);
+              setNum(Math.random());
             }}
             name="search"
             layout="inline"
