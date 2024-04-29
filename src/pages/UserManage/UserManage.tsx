@@ -59,6 +59,7 @@ export function UserManage() {
       },
       {
         title: '操作',
+        width: 160,
         render: (_, record) =>
           !record.isAdmin &&
           (record.isFrozen ? (

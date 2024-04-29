@@ -6,12 +6,16 @@ export const getLocalCategoryData = () => {
   return sessionStorage.getItem('categoryList');
 };
 
+export const clearSessionStorage = () => {
+  sessionStorage.removeItem('categoryList');
+};
+
 async function getCategoryList() {
   const localData = getLocalCategoryData();
   if (localData) {
     return Promise.resolve(JSON.parse(localData));
   } else {
-    const { data } = await searchCategoryList();
+    const { data } = await searchCategoryList(null, 1, 1000);
 
     const list = data.data.list.map((item) => {
       return {

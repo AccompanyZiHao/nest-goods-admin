@@ -4,6 +4,7 @@ import { createCategory } from '../../interfaces/interfaces';
 import { useCallback } from 'react';
 import { useForm } from 'antd/es/form/Form';
 import { SearchCategory } from '.';
+import { clearSessionStorage } from './CategorySelect';
 
 export interface CreateCategoryModalProps {
   isOpen: boolean;
@@ -18,6 +19,9 @@ export function CreateCategoryModal(props: CreateCategoryModalProps) {
       const res = await createCategory(values);
       if (res.status === 201 || res.status === 200) {
         message.success('新增成功');
+
+        clearSessionStorage();
+
         form.resetFields();
         props.handleClose();
       } else {
@@ -26,12 +30,7 @@ export function CreateCategoryModal(props: CreateCategoryModalProps) {
     });
   }, []);
   return (
-    <Modal
-      title="新增类型"
-      open={props.isOpen}
-      onOk={handleOk}
-      onCancel={() => props.handleClose()}
-    >
+    <Modal title="新增类型" open={props.isOpen} onOk={handleOk} onCancel={() => props.handleClose()}>
       <Form form={form} colon={false} {...FormLayout}>
         <Form.Item
           label="类型名称"

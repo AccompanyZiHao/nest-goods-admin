@@ -72,6 +72,7 @@ export function GoodsManage() {
       {
         title: '商品图片',
         dataIndex: 'img',
+        width: 120,
         render: (_, record) => (
           <div>
             <Image width={100} src={BASE_URL + (record.img || DEFAULT_IMAGE)} />
@@ -104,6 +105,7 @@ export function GoodsManage() {
       },
       {
         title: '操作',
+        width: 160,
         render: (_, record) => (
           <div>
             <Button

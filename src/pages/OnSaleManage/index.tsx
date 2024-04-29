@@ -25,6 +25,8 @@ import { GoodsManageResult } from '../GoodsManage';
 import dayjs from 'dayjs';
 import TextArea from 'antd/es/input/TextArea';
 import { showConfirm } from '../../components/confirm';
+import { Category } from '../Category';
+import { CategorySelect } from '../Category/CategorySelect';
 
 export interface OnSaleSearchForm {
   username: string;
@@ -118,15 +120,15 @@ export function OnSaleManage() {
           1: <Tag color="processing">审核中</Tag>,
           2: <Tag color="success">审核通过</Tag>,
           3: <Tag color="error">审核不通过</Tag>,
-          4: <Tag color="default">审核已取消</Tag>,
+          4: <Tag color="default">用户已撤消</Tag>,
         }[record.request_status];
       },
     },
     {
       title: '操作时间',
-      dataIndex: 'createTime',
+      dataIndex: 'updateTime',
       render(_, record) {
-        return dayjs(new Date(record.createTime)).format('YYYY-MM-DD hh:mm:ss');
+        return dayjs(new Date(record.updateTime)).format('YYYY-MM-DD HH:mm:ss');
       },
     },
     {
@@ -139,6 +141,7 @@ export function OnSaleManage() {
     },
     {
       title: '操作',
+      width: 160,
       render: (_, record) =>
         record.request_status === 1 && (
           <div>
@@ -245,8 +248,8 @@ export function OnSaleManage() {
               <Input />
             </Form.Item>
 
-            <Form.Item label="商品类型" name="goodsType">
-              <Input />
+            <Form.Item label="商品类型" name="goodsType" style={{ width: 200 }}>
+              <CategorySelect />
             </Form.Item>
 
             <Form.Item label=" ">

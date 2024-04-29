@@ -55,6 +55,7 @@ export function Category() {
       UpdateTimeColumn,
       {
         title: '操作',
+        width: 160,
         render: (_, record) => (
           <div>
             <Button
