@@ -104,7 +104,7 @@ export function OnSaleManage() {
       dataIndex: 'request_quantity',
     },
     {
-      title: '上/下架',
+      title: '申请类型',
       dataIndex: 'request_type',
       render(_, record) {
         return record.request_type === 1 ? '上架' : '下架';
@@ -134,11 +134,11 @@ export function OnSaleManage() {
       },
     },
     {
-      title: '备注',
+      title: '拒绝原因',
       dataIndex: 'refuse_reason',
     },
     {
-      title: '描述',
+      title: '备注',
       dataIndex: 'description',
     },
     {

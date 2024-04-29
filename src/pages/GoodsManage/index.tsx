@@ -195,7 +195,10 @@ export function GoodsManage() {
       <div className="goodsManage-form">
         <Form
           form={form}
-          onFinish={() => setPageNo(1)}
+          onFinish={() => {
+            setPageNo(1);
+            setRefresh(true);
+          }}
           name="search"
           layout="inline"
           colon={false}

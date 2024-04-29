@@ -68,18 +68,18 @@ export function Category() {
               okText="Yes"
               cancelText="No"
             >
-              <a href="#">删除</a>
+              <Button>删除</Button>
             </Popconfirm>
-            <br />
-            <a
-              href="#"
+            <Button
+              type="primary"
+              size="small"
               onClick={() => {
                 setIsUpdateModalOpen(true);
                 setRow(record);
               }}
             >
               编辑
-            </a>
+            </Button>
           </div>
         ),
       },
@@ -88,33 +88,26 @@ export function Category() {
   );
 
   // 搜索
-  const searchHandle = useCallback(
-    async (values: SearchCategory, initPage?: number) => {
-      const res = await searchCategoryList(
-        values.category_name,
-        initPage ? 1 : pageNo,
-        pageSize
+  const searchHandle = async (values: SearchCategory, initPage?: number) => {
+    const res = await searchCategoryList(values.category_name, initPage ? 1 : pageNo, pageSize);
+
+    const { data } = res.data;
+    if (res.status === 201 || res.status === 200) {
+      setTableData(
+        data.list.map((item: CategoryResult) => {
+          return {
+            key: item.category_id,
+            ...item,
+          };
+        })
       );
+      setTotal(data.totalCount);
+    } else {
+      message.error(data || '系统繁忙，请稍后再试');
+    }
 
-      const { data } = res.data;
-      if (res.status === 201 || res.status === 200) {
-        setTableData(
-          data.list.map((item: CategoryResult) => {
-            return {
-              key: item.category_id,
-              ...item,
-            };
-          })
-        );
-        setTotal(data.totalCount);
-      } else {
-        message.error(data || '系统繁忙，请稍后再试');
-      }
-
-      setRefresh(false);
-    },
-    []
-  );
+    setRefresh(false);
+  };
 
   // 删除
   const handleDelete = useCallback(async (id: number) => {
@@ -134,12 +127,13 @@ export function Category() {
         category_name: form.getFieldValue('category_name'),
       });
     }
-  }, [pageNo, pageSize, refresh]);
+  }, [refresh]);
 
   // 分页查询
   const changePage = useCallback(function (pageNo: number, pageSize: number) {
     setPageNo(pageNo);
     setPageSize(pageSize);
+    setRefresh(true);
   }, []);
 
   return (
@@ -147,7 +141,10 @@ export function Category() {
       <div className="form">
         <Form
           form={form}
-          onFinish={searchHandle}
+          onFinish={() => {
+            setPageNo(1);
+            setRefresh(true);
+          }}
           name="search"
           layout="inline"
           colon={false}
