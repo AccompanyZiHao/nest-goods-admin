@@ -20,6 +20,7 @@ export interface UserSearchResult {
   headPic: string;
   createTime: Date;
   isFrozen: boolean;
+  isAdmin: boolean;
 }
 
 export function UserManage() {
@@ -56,21 +57,23 @@ export function UserManage() {
       {
         title: '状态',
         dataIndex: 'isFrozen',
-        render: (_, record) =>
-          record.isFrozen ? <Badge status="success">已冻结</Badge> : '',
+        render: (_, record) => (record.isFrozen ? <Badge status="success">已冻结</Badge> : ''),
       },
       {
         title: '操作',
-        render: (_, record) => (
-          <a
-            href="#"
-            onClick={() => {
-              freezeUser(record.id);
-            }}
-          >
-            冻结
-          </a>
-        ),
+        render: (_, record) =>
+          !record.isAdmin && (
+            <Button
+              type="primary"
+              size="small"
+              danger
+              onClick={() => {
+                freezeUser(record.id);
+              }}
+            >
+              冻结
+            </Button>
+          ),
       },
     ],
     []
