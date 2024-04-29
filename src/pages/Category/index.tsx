@@ -69,7 +69,7 @@ export function Category() {
               onClick={() =>
                 showConfirm(
                   {
-                    content: '确认删除此商品类别吗？',
+                    content: `确认删除商品类别【${record.category_name}】吗？`,
                   },
                   () => {
                     handleDelete(record.category_id);

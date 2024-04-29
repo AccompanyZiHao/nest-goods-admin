@@ -19,6 +19,7 @@ import { UpdateModal } from './UpdateModal';
 import { goodsTypeList } from '../../const/goodsType';
 import { CategorySelect } from '../Category/CategorySelect';
 import { BASE_URL, DEFAULT_IMAGE } from '../../const/base';
+import { showConfirm } from '../../components/confirm';
 
 interface SearchGoods {
   name: string;
@@ -31,6 +32,8 @@ export interface GoodsManageResult {
   name: string;
   kind: number;
   img: string;
+  num: number;
+  saleNUm: number;
   sellPrice: string;
   description: string;
   isSale: boolean;
@@ -79,6 +82,14 @@ export function GoodsManage() {
         dataIndex: 'sellPrice',
       },
       {
+        title: '商品数量',
+        dataIndex: 'num',
+      },
+      {
+        title: '已上架数量',
+        dataIndex: 'saleNum',
+      },
+      {
         title: '描述',
         dataIndex: 'description',
       },
@@ -94,25 +105,29 @@ export function GoodsManage() {
         title: '上架状态',
         dataIndex: 'isSale',
         render: (_, record) =>
-          record.isSale ? (
-            <Badge status="error">已上架</Badge>
-          ) : (
-            <Badge status="success">未上架</Badge>
-          ),
+          record.isSale ? <Badge status="error">已上架</Badge> : <Badge status="success">未上架</Badge>,
       },
       {
         title: '操作',
         render: (_, record) => (
           <div>
-            <Popconfirm
-              title="商品删除"
-              description="确认删除吗？"
-              onConfirm={() => handleDelete(record.id)}
+            <Button
+              type="primary"
+              danger
+              size="small"
+              onClick={() =>
+                showConfirm(
+                  {
+                    content: `确认删除商品【${record.name}】吗？`,
+                  },
+                  () => {
+                    handleDelete(record.id);
+                  }
+                )
+              }
             >
-              <Button type="primary" danger size="small">
-                删除
-              </Button>
-            </Popconfirm>
+              删除
+            </Button>
             <Button
               type="primary"
               size="small"
