@@ -20,6 +20,7 @@ import { goodsTypeList } from '../../const/goodsType';
 import { CategorySelect } from '../Category/CategorySelect';
 import { BASE_URL, DEFAULT_IMAGE } from '../../const/base';
 import { showConfirm } from '../../components/confirm';
+import { CreateTimeColumn, UpdateTimeColumn } from '../../components/Time';
 
 interface SearchGoods {
   name: string;
@@ -93,14 +94,8 @@ export function GoodsManage() {
         title: '描述',
         dataIndex: 'description',
       },
-      {
-        title: '添加时间',
-        dataIndex: 'createTime',
-      },
-      {
-        title: '上次更新时间',
-        dataIndex: 'updateTime',
-      },
+      CreateTimeColumn,
+      UpdateTimeColumn,
       {
         title: '上架状态',
         dataIndex: 'isSale',

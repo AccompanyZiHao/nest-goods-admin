@@ -5,6 +5,7 @@ import { ColumnsType } from "antd/es/table";
 import { freeze, userSearch } from "../../interfaces/interfaces";
 import { useForm } from "antd/es/form/Form";
 import { BASE_URL } from '../../const/base';
+import { RegisterTimeColum } from '../../components/Time';
 
 interface SearchUser {
   username: string;
@@ -50,10 +51,7 @@ export function UserManage() {
         title: '邮箱',
         dataIndex: 'email',
       },
-      {
-        title: '注册时间',
-        dataIndex: 'createTime',
-      },
+      RegisterTimeColum,
       {
         title: '状态',
         dataIndex: 'isFrozen',
@@ -92,13 +90,7 @@ export function UserManage() {
   }, []);
 
   const searchUser = useCallback(async (values: SearchUser) => {
-    const res = await userSearch(
-      values.username,
-      values.nickName,
-      values.email,
-      pageNo,
-      pageSize
-    );
+    const res = await userSearch(values.username, values.nickName, values.email, pageNo, pageSize);
 
     const { data } = res.data;
     if (res.status === 201 || res.status === 200) {
@@ -133,13 +125,7 @@ export function UserManage() {
   return (
     <div id="userManage-container">
       <div className="userManage-form">
-        <Form
-          form={form}
-          onFinish={searchUser}
-          name="search"
-          layout="inline"
-          colon={false}
-        >
+        <Form form={form} onFinish={searchUser} name="search" layout="inline" colon={false}>
           <Form.Item label="用户名" name="username">
             <Input />
           </Form.Item>
@@ -148,11 +134,7 @@ export function UserManage() {
             <Input />
           </Form.Item>
 
-          <Form.Item
-            label="邮箱"
-            name="email"
-            rules={[{ type: 'email', message: '请输入合法邮箱地址!' }]}
-          >
+          <Form.Item label="邮箱" name="email" rules={[{ type: 'email', message: '请输入合法邮箱地址!' }]}>
             <Input />
           </Form.Item>
 

@@ -10,6 +10,7 @@ import {
 import { CreateCategoryModal } from './CreateModal';
 import { UpdateCategoryModal } from './UpdateModal';
 import { showConfirm } from '../../components/confirm';
+import { CreateTimeColumn, UpdateTimeColumn } from './../../components/Time';
 
 export interface SearchCategory {
   category_name: string;
@@ -50,14 +51,8 @@ export function Category() {
         title: '类别名称',
         dataIndex: 'category_name',
       },
-      {
-        title: '添加时间',
-        dataIndex: 'createTime',
-      },
-      {
-        title: '上次更新时间',
-        dataIndex: 'updateTime',
-      },
+      CreateTimeColumn,
+      UpdateTimeColumn,
       {
         title: '操作',
         render: (_, record) => (

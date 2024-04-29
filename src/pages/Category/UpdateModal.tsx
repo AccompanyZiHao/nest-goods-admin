@@ -25,7 +25,7 @@ export function UpdateCategoryModal(props: UpdateModalProps) {
         category_id: categoryId,
       });
       if (res.status === 201 || res.status === 200) {
-        message.success('新增成功');
+        message.success('修改成功');
         form.resetFields();
         props.handleClose();
       } else {
