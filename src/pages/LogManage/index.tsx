@@ -91,8 +91,9 @@ export const LogManage = () => {
     []
   );
 
-  const searchHandler = async (values) => {
+  const searchHandler = async () => {
     const res = await logList({
+      userName: form.getFieldValue('userName'),
       pageNo,
       pageSize,
     });
@@ -119,7 +120,7 @@ export const LogManage = () => {
   }, []);
 
   useEffect(() => {
-    searchHandler({});
+    searchHandler();
   }, [pageNo, pageSize]);
 
   return (
@@ -129,23 +130,19 @@ export const LogManage = () => {
           form={form}
           onFinish={() => {
             setPageNo(1);
-            // setRefresh(true);
+            searchHandler();
           }}
           name="search"
           layout="inline"
           colon={false}
         >
-          {/* <Form.Item label="商品类型" name="kind" style={{ width: 200 }}>
-            <CategorySelect />
+          <Form.Item label="用户名称" name="userName" style={{ width: 200 }}>
+            <Input placeholder="" />
           </Form.Item>
-
 
           <Form.Item label=" ">
             <Button htmlType="submit">搜索</Button>
-            <Button type="primary" onClick={() => setIsCreateModalOpen(true)}>
-              添加
-            </Button>
-          </Form.Item> */}
+          </Form.Item>
         </Form>
       </div>
       <div className="table">
