@@ -13,6 +13,8 @@ import { GoodsManage } from './pages/GoodsManage';
 import { OnSaleManage } from './pages/OnSaleManage';
 import { Statistics } from './pages/Statistics/Statistics';
 import { Category } from './pages/Category';
+import { LogManage } from './pages/LogManage';
+
 import { ConfigProvider } from 'antd';
 import zhCN from 'antd/es/locale/zh_CN';
 
@@ -51,6 +53,10 @@ const routes = [
           {
             path: MenuPath[MenuEnum.category],
             element: <Category />,
+          },
+          {
+            path: MenuPath[MenuEnum.logManage],
+            element: <LogManage />,
           },
         ],
       },

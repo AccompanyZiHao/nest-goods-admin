@@ -5,7 +5,7 @@ export const TimeColumn = (title, dataIndex) => {
     title,
     dataIndex,
     render(_, record) {
-      return dayjs(new Date(record.createTime)).format('YYYY-MM-DD HH:mm:ss');
+      return dayjs(new Date(record[dataIndex])).format('YYYY-MM-DD HH:mm:ss');
     },
   };
 };
@@ -13,3 +13,4 @@ export const TimeColumn = (title, dataIndex) => {
 export const CreateTimeColumn = TimeColumn('添加时间', 'createTime');
 export const UpdateTimeColumn = TimeColumn('上次更新时间', 'updateTime');
 export const RegisterTimeColum = TimeColumn('注册时间', 'createTime');
+export const OperatorTimeColum = TimeColumn('操作时间', 'operTime');

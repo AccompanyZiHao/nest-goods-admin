@@ -26,6 +26,10 @@ const items: MenuProps['items'] = [
     key: MenuEnum.userManage,
     label: '用户管理',
   },
+  {
+    key: MenuEnum.logManage,
+    label: '日志管理',
+  },
 ];
 
 // 菜单跳转

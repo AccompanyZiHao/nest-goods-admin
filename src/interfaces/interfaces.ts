@@ -130,6 +130,10 @@ export async function updatePassword(data: UpdatePassword) {
   return await axiosInstance.post('/user/admin/update_password', data);
 }
 
+
+//*************** 商品 ***************/
+
+
 export async function searchGoodsList(name: string, kind: number, pageNo: number, pageSize: number) {
   return await axiosInstance.get('/goods/list', {
     params: {
@@ -156,6 +160,8 @@ export async function updateGoods(goods: UpdateGoodsForm) {
 export async function findGoods(id: number) {
   return await axiosInstance.get('/goods/' + id);
 }
+
+//*************** 上下架 ***************/
 
 export async function shelfRequestList(SearchForm: OnSaleSearchForm, pageNo: number, pageSize: number) {
   let rangeStartDate;
@@ -245,4 +251,11 @@ export async function updateCategory(category: UpdateCategoryForm) {
 
 export async function logout() {
   return await axiosInstance.post('/user/logout');
+}
+
+
+//*************** 商品 ***************/
+
+export async function logList(params) {
+  return await axiosInstance.get('/logInfo/operator/list', { params });
 }

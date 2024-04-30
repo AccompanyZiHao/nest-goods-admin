@@ -4,6 +4,7 @@ export enum MenuEnum {
   userManage,
   statistics,
   category,
+  logManage,
 }
 
 export const MenuPath = {
@@ -12,4 +13,5 @@ export const MenuPath = {
   [MenuEnum.userManage]: '/user-manage',
   [MenuEnum.statistics]: '/statistics',
   [MenuEnum.category]: '/category',
+  [MenuEnum.logManage]: '/log-manage',
 };
