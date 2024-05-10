@@ -3,31 +3,40 @@ import { FormLayout } from '../../const/form';
 import { createCategory } from '../../interfaces/interfaces';
 import { useCallback } from 'react';
 import { useForm } from 'antd/es/form/Form';
-import { SearchCategory } from '.';
 import { clearSessionStorage } from './CategorySelect';
 
 export interface CreateCategoryModalProps {
   isOpen: boolean;
   handleClose: Function;
 }
+export interface CreateFormCategory {
+  categoryName: string;
+}
 export function CreateCategoryModal(props: CreateCategoryModalProps) {
-  const [form] = useForm<SearchCategory>();
+  const [form] = useForm<CreateFormCategory>();
 
   // 新增
   const handleOk = useCallback(() => {
-    form.validateFields().then(async (values) => {
-      const res = await createCategory(values);
-      if (res.status === 201 || res.status === 200) {
-        message.success('新增成功');
+    form
+      .validateFields()
+      .then(async (values) => {
+        console.log('===values', values);
 
-        clearSessionStorage();
+        const res = await createCategory(values);
+        if (res.status === 201 || res.status === 200) {
+          message.success('新增成功');
 
-        form.resetFields();
-        props.handleClose();
-      } else {
-        message.error(res.data.data);
-      }
-    });
+          clearSessionStorage();
+
+          form.resetFields();
+          props.handleClose();
+        } else {
+          message.error(res.data.data);
+        }
+      })
+      .catch((res) => {
+        console.log('error', res);
+      });
   }, []);
   return (
     <Modal title="新增类型" open={props.isOpen} onOk={handleOk} onCancel={() => props.handleClose()}>

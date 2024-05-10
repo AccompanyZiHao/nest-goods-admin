@@ -19,19 +19,24 @@ export function UpdateCategoryModal(props: UpdateModalProps) {
 
   // 编辑
   const handleOk = () => {
-    form.validateFields().then(async (values) => {
-      const res = await updateCategory({
-        ...values,
-        category_id: categoryId,
+    form
+      .validateFields()
+      .then(async (values) => {
+        const res = await updateCategory({
+          ...values,
+          category_id: categoryId,
+        });
+        if (res.status === 201 || res.status === 200) {
+          message.success('修改成功');
+          form.resetFields();
+          props.handleClose();
+        } else {
+          message.error(res.data.data);
+        }
+      })
+      .catch((res) => {
+        console.log('error', res);
       });
-      if (res.status === 201 || res.status === 200) {
-        message.success('修改成功');
-        form.resetFields();
-        props.handleClose();
-      } else {
-        message.error(res.data.data);
-      }
-    });
   };
 
   // 弹窗数据回显

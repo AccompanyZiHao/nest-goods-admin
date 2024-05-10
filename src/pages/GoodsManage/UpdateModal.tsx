@@ -1,7 +1,7 @@
 import { Select, Form, Input, InputNumber, Modal, message } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import TextArea from 'antd/es/input/TextArea';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { Upload } from './../../components/Upload';
 
@@ -22,9 +22,16 @@ export interface UpdateGoodsForm extends CreateGoodsForm {
 
 export function UpdateModal(props: UpdateGoodsModalProps) {
   const [form] = useForm<UpdateGoodsForm>();
+  const [goodsInfo, setGoodsInfo] = useState<UpdateGoodsForm>();
 
   const handleOk = useCallback(async function () {
     const values = form.getFieldsValue();
+
+    // 上架
+    if (goodsInfo && values.num < goodsInfo.saleNum && goodsInfo.isSale) {
+      message.warning('此商品已上架，商品数量不能小于' + goodsInfo.saleNum);
+      return;
+    }
 
     values.description = values.description || '';
 
@@ -55,6 +62,8 @@ export function UpdateModal(props: UpdateGoodsModalProps) {
         form.setFieldValue('num', data.data.num);
         form.setFieldValue('sellPrice', data.data.sellPrice);
         form.setFieldValue('description', data.data.description);
+
+        setGoodsInfo(data.data);
       } else {
         message.error(res.data.data);
       }

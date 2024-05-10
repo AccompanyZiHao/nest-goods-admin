@@ -23,6 +23,8 @@ export interface CreateGoodsForm {
   sellPrice: number;
   kind: number;
   description: string;
+  isSale?: boolean;
+  saleNum?: number;
 }
 
 export function CreateModal(props: CreateModalProps) {

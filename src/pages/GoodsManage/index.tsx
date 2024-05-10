@@ -108,23 +108,25 @@ export function GoodsManage() {
         width: 160,
         render: (_, record) => (
           <div>
-            <Button
-              type="primary"
-              danger
-              size="small"
-              onClick={() =>
-                showConfirm(
-                  {
-                    content: `确认删除商品【${record.name}】吗？`,
-                  },
-                  () => {
-                    handleDelete(record.id);
-                  }
-                )
-              }
-            >
-              删除
-            </Button>
+            {!record.isSale && (
+              <Button
+                type="primary"
+                danger
+                size="small"
+                onClick={() =>
+                  showConfirm(
+                    {
+                      content: `确认删除商品【${record.name}】吗？`,
+                    },
+                    () => {
+                      handleDelete(record.id);
+                    }
+                  )
+                }
+              >
+                删除
+              </Button>
+            )}
             <Button
               type="primary"
               size="small"
