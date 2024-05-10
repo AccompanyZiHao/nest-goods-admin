@@ -12,6 +12,7 @@ import dayjs from 'dayjs';
 import { BASE_URL } from '../const/base';
 import { SearchCategory } from '../pages/Category';
 import { UpdateCategoryForm } from '../pages/Category/UpdateModal';
+import { CreateFormCategory } from '../pages/Category/CreateModal';
 
 const axiosInstance = axios.create({
   baseURL: BASE_URL,
@@ -80,13 +81,7 @@ export async function login(username: string, password: string) {
   });
 }
 
-export async function userSearch(
-  username: string,
-  nickName: string,
-  email: string,
-  pageNo: number,
-  pageSize: number
-) {
+export async function userSearch(username: string, nickName: string, email: string, pageNo: number, pageSize: number) {
   return await axiosInstance.get('/user/list', {
     params: {
       username: username?.trim(),
@@ -130,9 +125,7 @@ export async function updatePassword(data: UpdatePassword) {
   return await axiosInstance.post('/user/admin/update_password', data);
 }
 
-
 //*************** 商品 ***************/
-
 
 export async function searchGoodsList(name: string, kind: number, pageNo: number, pageSize: number) {
   return await axiosInstance.get('/goods/list', {
@@ -235,7 +228,7 @@ export async function searchCategoryList(name?: string, pageNo?: number, pageSiz
   });
 }
 
-export async function createCategory(category: SearchCategory) {
+export async function createCategory(category: CreateFormCategory) {
   return await axiosInstance.post('/category/create', category);
 }
 
